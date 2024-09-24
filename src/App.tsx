@@ -17,6 +17,7 @@ import {
   useWallet,
   useConnect,
   useConnectors,
+  useConnectUI,
 } from "@fuels/react";
 import {  BN } from 'fuels';
 
@@ -46,7 +47,7 @@ const App: React.FC = () => {
     notification: null,
   });
 
-  const { connect } = useConnect();
+  const { connect } = useConnectUI();
   const { isConnected } = useIsConnected();
   const { wallet } = useWallet();
   const { connectors } = useConnectors();
@@ -160,7 +161,7 @@ const App: React.FC = () => {
   
 
   const onConnect = async () => {
-    connect("Fuel Wallet");
+    connect();
   };
 
   const onRouteChange = (route: string) => {
