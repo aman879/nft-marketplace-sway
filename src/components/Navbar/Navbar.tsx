@@ -6,15 +6,10 @@ interface NavbarProps {
   isConnected: boolean;
   connect: () => void;
   address: string | null;
-  isInstalled: boolean;
 }
 
-const Navbar: React.FC<NavbarProps> = ({ onRouteChange, isConnected, connect, address, isInstalled }) => {
-  console.log(isInstalled)
+const Navbar: React.FC<NavbarProps> = ({ onRouteChange, isConnected, connect, address }) => {
 
-  const handleRedirect = () => {
-    window.open('https://wallet.fuel.network/docs/install/', '_blank'); // Opens in a new tab
-  };
 
   return (
     <nav>
@@ -25,7 +20,6 @@ const Navbar: React.FC<NavbarProps> = ({ onRouteChange, isConnected, connect, ad
         <p onClick={() => onRouteChange("explore")}>Explore</p>
         <p onClick={() => onRouteChange("mint")}>Mint</p>
         <p onClick={() => onRouteChange("mynft")}>My NFTs</p>
-        { isInstalled ? (
           <button
             onClick={() => connect()}
             disabled={isConnected}
@@ -37,9 +31,7 @@ const Navbar: React.FC<NavbarProps> = ({ onRouteChange, isConnected, connect, ad
                 : "Connect"
             }
           </button>
-        ): (
-          <button onClick={handleRedirect}>Install Fuel Wallet to Connect</button>
-        )}
+
       </div>
     </nav>
   );

@@ -192,7 +192,6 @@ const App: React.FC = () => {
         isConnected={isConnected}
         connect={onConnect}
         address={state.address}
-        isInstalled={state.isInstalled}
       />
       {state.route === "explore" ? (
         <Scroll>
