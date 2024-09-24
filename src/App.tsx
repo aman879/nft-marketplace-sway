@@ -15,7 +15,6 @@ import Scroll from './components/Scroll/Scroll';
 import { 
   useIsConnected,
   useWallet,
-  useConnect,
   useConnectors,
   useConnectUI,
 } from "@fuels/react";
