@@ -147,8 +147,6 @@ const App: React.FC = () => {
         notification: { message: 'Minting successful!', type: 'success' }
       }));
   
-      window.location.reload();
-  
     } catch (error) {
       console.error('Error minting NFT:', error);
       setState(prev => ({
