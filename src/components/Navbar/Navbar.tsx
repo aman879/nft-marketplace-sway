@@ -15,7 +15,7 @@ const Navbar: React.FC<NavbarProps> = ({ onRouteChange, isConnected, connect, ad
       <div className="text-2xl font-bold">Ignitus Network</div>
       
       {/* Desktop Menu */}
-      <div className="space-x-4 hidden sm:flex">
+      <div className="z-10 space-x-4 hidden sm:flex">
         <p
           className="cursor-pointer text-lg hover:bg-gray-200 px-3 py-2 rounded-md transition"
           onClick={() => onRouteChange("explore")}
@@ -68,7 +68,7 @@ const Navbar: React.FC<NavbarProps> = ({ onRouteChange, isConnected, connect, ad
 
       {/* Mobile Menu */}
       {isMobileMenuOpen && (
-        <div className="absolute top-14 left-0 w-full bg-gray-100 shadow-md sm:hidden text-center">
+        <div className="z-10 absolute top-14 left-0 w-full bg-gray-100 shadow-md sm:hidden text-center">
           <div className="flex flex-col space-y-2 p-4">
             <p
               className="cursor-pointer text-lg hover:bg-gray-200 px-3 py-2 rounded-md transition"
