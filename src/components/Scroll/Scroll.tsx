@@ -10,7 +10,7 @@ const Scroll: React.FC<ScrollProps> = (props) => {
       style={{
         flex: 1,
         overflowY: "scroll",
-        height: "600px",
+        height: "700px",
       }}
     >
       {props.children}

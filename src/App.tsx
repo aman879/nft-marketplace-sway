@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import './App.css';
 import Navbar from './components/Navbar/Navbar';
-import { PinataSDK } from 'pinata-web3';
 import { ethers } from 'ethers';
 import { toB256, isBech32 } from '@fuel-ts/address';
 import Explore from './components/Explore/Explore';
@@ -9,7 +8,6 @@ import Mint from './components/Mint/Mint';
 import MyNFT from './components/MyNFT/MyNFT';
 import Notification from './components/Notification/Notification'; // Import the notification component
 import contractId from "../src/contracts/address.json";
-import jws from "../src/contracts/key.json";
 import { NftContract } from "./sway-api/contracts/NftContract";
 import Scroll from './components/Scroll/Scroll';
 import { 
@@ -18,7 +16,8 @@ import {
   useConnectors,
   useConnectUI,
 } from "@fuels/react";
-import {  BN } from 'fuels';
+import { BN } from 'fuels';
+import { uploadFileToPinata, uploadMetadataToPinata, getFileFromPinata } from './utils/pinata'; // Import from utils
 
 interface AppState {
   route: string;
@@ -28,11 +27,6 @@ interface AppState {
   isInstalled: boolean;
   notification: { message: string, type: 'success' | 'error' | 'loading' } | null;
 }
-
-const pinata = new PinataSDK({
-  pinataJwt: jws.jws,
-  pinataGateway: "beige-sophisticated-baboon-74.mypinata.cloud",
-});
 
 const CONTRACT_ID = contractId.address;
 
@@ -84,12 +78,10 @@ const App: React.FC = () => {
     async function getAllNFTs() {
       if (state.contract !== null) {
         try {
-
-            setState(prev => ({
-              ...prev,
-              notification: { message: 'Loading NFTs...', type: 'loading' }
-            }));
-
+          setState(prev => ({
+            ...prev,
+            notification: { message: 'Loading NFTs...', type: 'loading' }
+          }));
 
           const res = await state.contract.functions.get_total_count().txParams({ gasLimit: 100_000 }).get();
           const totalCount = new BN(res.value).toNumber();
@@ -102,19 +94,19 @@ const App: React.FC = () => {
             if (nftData.value.uri) {
               nftData.value.uri = nftData.value.uri.slice(0, -1);
             }
-            const data = await pinata.gateways.get(`https://beige-sophisticated-baboon-74.mypinata.cloud/ipfs/${nftData.value.uri}`);
+            const data = await getFileFromPinata(nftData.value.uri); // Use the utility function
             const mergedNFTData = {
               ...(typeof nftData.value === 'object' ? nftData.value : {}),
-              ...(typeof data.data === 'object' ? data.data : {}),
+              ...(typeof data === 'object' ? data : {}),
             };
             nfts.push(mergedNFTData);
           }
 
-            setState(prev => ({
-              ...prev,
-              nfts,
-              notification: { message: 'NFTs loaded successfully!', type: 'success' }
-            }));
+          setState(prev => ({
+            ...prev,
+            nfts,
+            notification: { message: 'NFTs loaded successfully!', type: 'success' }
+          }));
 
         } catch (error) {
           console.error('Error fetching NFTs:', error);
@@ -155,7 +147,6 @@ const App: React.FC = () => {
       }));
     }
   };
-  
 
   const onConnect = async () => {
     connect();
@@ -171,14 +162,9 @@ const App: React.FC = () => {
     }
 
     try {
-      const uploadImage = await pinata.upload.file(file);
-      const metadata = await pinata.upload.json({
-        name: name,
-        description: description,
-        price: price,
-        image: `https://beige-sophisticated-baboon-74.mypinata.cloud/ipfs/${uploadImage.IpfsHash}`,
-      });
-      return metadata.IpfsHash;
+      const imageIpfsHash = await uploadFileToPinata(file); // Use utility function
+      const metadataIpfsHash = await uploadMetadataToPinata(name, description, price, imageIpfsHash); // Use utility function
+      return metadataIpfsHash;
     } catch (error) {
       console.error("Error uploading to Pinata:", error);
       throw new Error("Upload to Pinata failed.");
