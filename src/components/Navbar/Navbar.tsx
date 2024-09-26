@@ -12,7 +12,7 @@ const Navbar: React.FC<NavbarProps> = ({ onRouteChange, isConnected, connect, ad
 
   return (
     <nav className="bg-gray-100 border-b border-gray-300 px-4 py-2 flex justify-between items-center">
-      <div className="text-2xl font-bold">NFT Marketplace</div>
+      <div className="text-2xl font-bold">Ignitus Network</div>
       
       {/* Desktop Menu */}
       <div className="space-x-4 hidden sm:flex">
